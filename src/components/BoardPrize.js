@@ -24,7 +24,6 @@ function BoardPrize() {
 
   const fetch = async ()=>{
     const response = await AuthService.getListPrizes();
-    console.log(response)
     setListPrize(response.data.data)
  }
 
@@ -34,7 +33,6 @@ function BoardPrize() {
 
 
   const onUpdateName = (value, index) => {
-    console.log(listPrize)
     setListPrize(()=>{
       return listPrize.map((item, i)=> {
         if(i == index) return {...item, name: value }
@@ -43,7 +41,6 @@ function BoardPrize() {
     })
   } 
   const onUpdateImg = (value, index) => {
-    console.log(listPrize)
     setListPrize(()=>{
       return listPrize.map((item, i)=> {
         if(i == index) return {...item, imgUrl: value }
@@ -53,7 +50,6 @@ function BoardPrize() {
   } 
   
   const onClickUpdate = async (id, name, imgUrl, index) => {
-    console.log(listPrize[index])
     try {
       setMessage({...message,open: false })
       const response = await AuthService.updatePrizeById(id, name, imgUrl);

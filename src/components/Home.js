@@ -34,9 +34,7 @@ function Home() {
   }
 
   useEffect(()=>{
-    // fetchUserInfo()
     if(message.open) {
-      console.log("first")
       onUpdateSpinNumber()
     }
   },[message.open] )
@@ -48,8 +46,12 @@ function Home() {
   }
 
   const fetchUserInfo = async () => {
-    const {data} = await AuthService.getUserInfo(user.id);
-    localStorage.setItem("user", JSON.stringify({...user, ...data.data}))
+    try {
+      const {data} = await AuthService.getUserInfo(user.id);
+      localStorage.setItem("user", JSON.stringify({...user, ...data.data}))
+    } catch (error) {
+      navigate('/login')
+    }
   }
   useEffect(()=>{
     fetchData()
@@ -72,7 +74,7 @@ function Home() {
     try {
       if(winner !== undefined) {
         await setTimeout(()=>{
-          if(user.numberOfSpins == 0) {
+          if(user?.numberOfSpins == 0) {
             setMessage({...message, content: "bạn đã hết lượt quay", open: true})
           }
           else {
@@ -150,14 +152,14 @@ function Home() {
          }
         <h2>Vòng quay may mắn</h2>
       {
-        user && <p style={{textAlign:'center', color:'#fff', fontSize: '20px', fontWeight:'500'}}>Còn lại: {user.numberOfSpins} lượt quay</p>
+        user && <p style={{textAlign:'center', color:'#fff', fontSize: '20px', fontWeight:'500'}}>Còn lại: {user?.numberOfSpins} lượt quay</p>
       }
 
       <div className='wheel'>
         <WheelComponent
             segments={listPrize.map(item=>item.name)}
             segColors={segColors}
-            winningSegment={user.numberOfSpins > 0 ? user?.prize  : ""}
+            winningSegment={user?.numberOfSpins > 0 ? user?.prize  : ""}
             onFinished={(winner) => onFinished(winner)}
             primaryColor="black"
             primaryColoraround="#ffffffb4"
@@ -177,14 +179,14 @@ function Home() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {user.numberOfSpins > 0 ? "Phần thưởng" : "Thông báo"}
+          {user?.numberOfSpins > 0 ? "Phần thưởng" : "Thông báo"}
         </DialogTitle>
         <DialogContent >
           <DialogContentText id="alert-dialog-description">
             {message.content}
           </DialogContentText>
           {
-            user.numberOfSpins > 0 && <img src={message.imgUrl} alt="" 
+            user?.numberOfSpins > 0 && <img src={message.imgUrl} alt="" 
             style={{
               width: '100%',
               height:'100px',
@@ -219,7 +221,7 @@ function Home() {
             tabIndex={-1}
           >
             {
-              user.prizeHistories?.reverse()?.map((item, index)=>
+              user?.prizeHistories?.reverse()?.map((item, index)=>
                 <p style={{
                   fontSize: '.8rem'                  
                 }}>

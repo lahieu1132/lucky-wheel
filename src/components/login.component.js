@@ -25,8 +25,8 @@ class Login extends Component {
     this.onChangePassword = this.onChangePassword.bind(this);
 
     this.state = {
-      username: "latrunghieu2000_admin",
-      password: "123456",
+      username: "",
+      password: "",
       loading: false,
       message: ""
     };
@@ -57,7 +57,6 @@ class Login extends Component {
     if (this.checkBtn.context._errors.length === 0) {
       AuthService.login(this.state.username, this.state.password).then(
         (res) => {
-          console.log(res)
           if(res.data.role === "ADMIN") {
             this.props.router.navigate("/admin");
             window.location.reload();
@@ -68,7 +67,6 @@ class Login extends Component {
           }
         },
         error => {
-          console.log(error)
           const resMessage =
             (error.response &&
               error.response.data &&

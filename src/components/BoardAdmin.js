@@ -24,7 +24,6 @@ function BoardAdmin() {
   useEffect(()=>{
     checkToken()
     if(user) {
-      console.log(isLogin)
       if(user.role.includes("ADMIN") && isLogin) {
         navigate('/admin')
       }
