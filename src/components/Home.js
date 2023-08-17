@@ -159,7 +159,7 @@ function Home() {
         <WheelComponent
             segments={listPrize.map(item=>item.name)}
             segColors={segColors}
-            winningSegment={user?.numberOfSpins > 0 ? user?.prize  : ""}
+            winningSegment={user?.prize || ""}
             onFinished={(winner) => onFinished(winner)}
             primaryColor="black"
             primaryColoraround="#ffffffb4"
@@ -199,7 +199,11 @@ function Home() {
         </DialogContent>
         <DialogActions>
           <Box display="flex" justifyContent="center" width='100%'>
-            <Button  variant="contained" onClick={()=>setMessage({...message, open: false})} autoFocus>
+            <Button  variant="contained" onClick={()=>{
+              setMessage({...message, open: false})
+              window.location.reload();
+
+            }} autoFocus>
               ok
             </Button>
           </Box>
