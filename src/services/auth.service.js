@@ -2,7 +2,7 @@ import axios from "axios";
 import authHeader from './auth-header';
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://192.168.1.7:8080/api/";
+const API_URL = "http://104.238.181.73:8080/api/";
 
 class AuthService {
   login(username, password) {
