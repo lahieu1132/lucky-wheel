@@ -166,7 +166,7 @@ function Home() {
             contrastColor="white"
             buttonText="Start"
             isOnlyOnce={false}
-            size={230}
+            size={290}
             upDuration={500}
             downDuration={2000}
         />

@@ -7,6 +7,9 @@ function BoardUser() {
     const [listUsers, setListUsers] = useState([])
     const [filterListUser, setFilterListUsers] = useState([])
     const [searchValue, setSearchValue] = useState("")
+    const [numberOfSpins, setNumberOfSpins] = useState('');
+    const [prize, setPrize] = useState('');
+
 
     const [listPrizes, setListPrizes] = useState([])
     const [message, setMessage] = useState({
@@ -36,8 +39,10 @@ function BoardUser() {
     }
 
     const onChangenumberOfSpins = (id,value) => {
+
+
         setFilterListUsers(()=>{
-            return listUsers.map((item)=>{
+            return filterListUser.map((item)=>{
                 if(item.id === id) return {...item, "numberOfSpins": value }
                 return item
             })
@@ -47,7 +52,7 @@ function BoardUser() {
 
     const onChangePrize = (id, value) => {
         setFilterListUsers(()=>{
-            return listUsers.map((item)=>{
+            return filterListUser.map((item)=>{
                 if(item.id === id) return {...item, "prize": value }
                 return item
             })
@@ -93,7 +98,6 @@ function BoardUser() {
                         <TextField id="standard-basic" label="Lượt quay" value={item.numberOfSpins} variant="standard" 
                             className='turns'
                             type='number'
-                            required
                             onChange={(event)=>onChangenumberOfSpins(item.id ,event.target.value)}
                         />
                         <Box className="gift" >
@@ -101,7 +105,6 @@ function BoardUser() {
                                 Giải thưởng
                             </InputLabel>
                             <NativeSelect
-                                defaultValue={item.prize}
                                 value={item.prize}
                                 style={{
                                     width:"100%"

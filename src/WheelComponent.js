@@ -148,7 +148,14 @@ const WheelComponent = ({
     ctx.rotate((lastAngle + angle) / 2);
     ctx.fillStyle = contrastColor || "white";
     ctx.font = "bold 1.5em " + fontFamily;
-    ctx.fillText(value.substr(0, 21), size / 2 + 20, 0);
+    const lines = value.match(/.{1,16}/g)
+    console.log(lines)
+    if (lines.length > 1) {
+      ctx.fillText(lines[0], size / 2 + 20, -10); 
+       ctx.fillText(lines[1], size / 2 + 20, 15);  
+    } else {
+      ctx.fillText(value, size / 2 + 20, 0); 
+    }
     ctx.restore();
   };
 
