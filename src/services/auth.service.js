@@ -1,12 +1,12 @@
 import axios from 'axios'
 import authHeader from './auth-header'
 
-const API_URL = 'http://64.176.45.22:8080/api/'
+const API_URL = 'http://192.168.1.13:8080/api/'
 
 class AuthService {
   login(username, password) {
     return axios
-      .post(API_URL + 'app/login', {
+      .post(API_URL + 'app/admin/login', {
         username,
         password,
       })
@@ -14,7 +14,6 @@ class AuthService {
         if (response.data.data.token) {
           localStorage.setItem('user', JSON.stringify(response.data.data))
         }
-
         return response.data
       })
   }
@@ -23,17 +22,16 @@ class AuthService {
     localStorage.removeItem('user')
   }
 
-  register(username, password) {
+  register(username, tel) {
     return axios
-      .post(API_URL + 'app/sign-up', {
+      .post(API_URL + 'app/users', {
         username,
-        password,
+        tel,
       })
       .then((response) => {
         if (response.data.data.token) {
           localStorage.setItem('user', JSON.stringify(response.data.data))
         }
-
         return response.data
       })
   }
@@ -59,12 +57,44 @@ class AuthService {
     return axios.get(API_URL + 'admin/users', { headers: authHeader() })
   }
 
-  updateUserById(id, numberOfSpins, prize) {
+  getListAdmin() {
+    return axios.get(API_URL + 'super-admin/admins', { headers: authHeader() })
+  }
+
+  getListAdminHistoryById(id) {
+    return axios.get(`${API_URL}admin/${id}/histories`, {
+      headers: authHeader(),
+    })
+  }
+
+  createUser(username, tel, numberOfSpins, prize) {
+    return axios.post(
+      API_URL + 'admin/users',
+      {
+        username,
+        prize,
+        numberOfSpins,
+        tel,
+      },
+      { headers: authHeader() }
+    )
+  }
+
+  createAdmin(username, password) {
+    return axios.post(
+      API_URL + 'super-admin/admins',
+      { username, password },
+      { headers: authHeader() }
+    )
+  }
+
+  updateUserById(id, numberOfSpins, prize, admin) {
     return axios.put(
       API_URL + 'admin/users/' + id,
       {
         numberOfSpins: numberOfSpins,
         prize: prize,
+        adminId: admin,
       },
       { headers: authHeader() }
     )

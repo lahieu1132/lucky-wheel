@@ -108,20 +108,22 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Quản lý admin"
-              to="/admin/history"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {user.role === 'SUPER_ADMIN' && (
+              <Item
+                title="Quản lý admin"
+                to="/admin/history"
+                icon={<ContactsOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
             <MenuItem
               style={{
                 color: 'red',
               }}
               onClick={() => {
                 authService.logout()
-                navigate('/')
+                navigate('/admin/login')
               }}
               icon={<LogoutIcon />}
             >

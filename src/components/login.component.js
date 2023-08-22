@@ -1,11 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Form from 'react-validation/build/form'
 import Input from 'react-validation/build/input'
-import CheckButton from 'react-validation/build/button'
-import { Link } from 'react-router-dom'
 import AuthService from '../services/auth.service'
+import { Link } from 'react-router-dom'
+import UserService from './../services/user.service'
 
 import { withRouter } from '../common/with-router'
+import { useState } from 'react'
+import authService from '../services/auth.service'
+import { useEffect } from 'react'
 
 const required = (value) => {
   if (!value) {
@@ -17,149 +20,110 @@ const required = (value) => {
   }
 }
 
-class Login extends Component {
-  constructor(props) {
-    super(props)
-    this.handleLogin = this.handleLogin.bind(this)
-    this.onChangeUsername = this.onChangeUsername.bind(this)
-    this.onChangePassword = this.onChangePassword.bind(this)
+function Login(props) {
+  const [username, setUserName] = useState('')
+  const [tel, setTel] = useState('')
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
 
-    this.state = {
-      username: '',
-      password: '',
-      loading: false,
-      message: '',
-    }
+  function onChangeUsername(e) {
+    setUserName(e.target.value.trim())
   }
 
-  onChangeUsername(e) {
-    this.setState({
-      username: e.target.value,
-    })
+  function onChangePassword(e) {
+    setTel(e.target.value.trim())
   }
 
-  onChangePassword(e) {
-    this.setState({
-      password: e.target.value,
-    })
-  }
-
-  handleLogin(e) {
+  const handleLogin = (e) => {
     e.preventDefault()
-
-    this.setState({
-      message: '',
-      loading: true,
-    })
-
-    this.form.validateAll()
-
-    if (this.checkBtn.context._errors.length === 0) {
-      AuthService.login(this.state.username, this.state.password).then(
-        (res) => {
-          if (res.data.role === 'ADMIN') {
-            this.props.router.navigate('/admin')
-            window.location.reload()
-          } else {
-            this.props.router.navigate('/')
-            window.location.reload()
-          }
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString()
-          this.setState({
-            loading: false,
-            message: resMessage,
-          })
-        }
-      )
-    } else {
-      this.setState({
-        loading: false,
-      })
-    }
+    setMessage('')
+    setLoading(true)
+    UserService.loginUser(username, tel).then(
+      (res) => {
+        props.router.navigate('/')
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString()
+        setMessage(resMessage)
+        setLoading(false)
+      }
+    )
   }
 
-  render() {
-    return (
+  return (
+    <div
+      className="col-md-12 login"
+      style={{
+        background: 'rgb(131,58,180)',
+        background:
+          'linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%)',
+      }}
+    >
       <div
-        className="col-md-12 login"
+        className="card card-container"
         style={{
           background: 'rgb(131,58,180)',
           background:
             'linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%)',
         }}
       >
-        <div
-          className="card card-container"
-          style={{
-            background: 'rgb(131,58,180)',
-            background:
-              'linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%)',
-          }}
-        >
-          <h2>Vòng quay may mắn</h2>
-          <Form
-            onSubmit={this.handleLogin}
-            ref={(c) => {
-              this.form = c
-            }}
-          >
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <Input
-                type="text"
-                className="form-control"
-                name="username"
-                value={this.state.username}
-                onChange={this.onChangeUsername}
-                validations={[required]}
-              />
-            </div>
+        <h2>Vòng quay may mắn</h2>
+        <Form onSubmit={handleLogin}>
+          <div className="form-group">
+            <label htmlFor="username" style={{ fontSize: 20, color: 'white' }}>
+              Tên tài khoản
+            </label>
+            <Input
+              type="text"
+              className="form-control"
+              name="username"
+              value={username}
+              onChange={onChangeUsername}
+              validations={[required]}
+            />
+          </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <Input
-                type="password"
-                className="form-control"
-                name="password"
-                value={this.state.password}
-                onChange={this.onChangePassword}
-                validations={[required]}
-              />
-            </div>
+          <div className="form-group">
+            <label htmlFor="password" style={{ fontSize: 20, color: 'white' }}>
+              Số điện thoại
+            </label>
+            <Input
+              type="text"
+              className="form-control"
+              name="password"
+              value={tel}
+              onChange={onChangePassword}
+              validations={[required]}
+            />
+          </div>
 
+          <div className="form-group">
+            <button className="btn btn-primary btn-block" disabled={loading}>
+              {loading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}
+              <span>Login</span>
+            </button>
+          </div>
+          <p>
+            Tạo tài khoản mới <Link to="/register">tại đây</Link>{' '}
+          </p>
+          {message && (
             <div className="form-group">
-              <button
-                className="btn btn-primary btn-block"
-                disabled={this.state.loading}
-              >
-                {this.state.loading && (
-                  <span className="spinner-border spinner-border-sm"></span>
-                )}
-                <span>Login</span>
-              </button>
-            </div>
-            <p>
-              Tạo tài khoản mới <Link to="/register">tại đây</Link>{' '}
-            </p>
-            {this.state.message && (
-              <div className="form-group">
-                <div className="alert alert-danger" role="alert">
-                  {this.state.message}
-                </div>
+              <div className="alert alert-danger" role="alert">
+                {message}
               </div>
-            )}
-          </Form>
-        </div>
+            </div>
+          )}
+        </Form>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default withRouter(Login)

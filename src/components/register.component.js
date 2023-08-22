@@ -73,29 +73,37 @@ class Register extends Component {
     })
 
     this.form.validateAll()
-
-    if (this.checkBtn.context._errors.length === 0) {
-      AuthService.register(this.state.username, this.state.password).then(
-        (response) => {
-          this.setState({
-            message: response.data.message,
-            successful: true,
-          })
-          this.props.router.navigate('/')
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString()
-          this.setState({
-            successful: false,
-            message: resMessage,
-          })
-        }
-      )
+    const phoneNumberRegex = /^(\+84|0)(\d){9,10}$/
+    if (phoneNumberRegex.test(this.state.password)) {
+      if (this.checkBtn.context._errors.length === 0) {
+        AuthService.register(this.state.username, this.state.password).then(
+          (response) => {
+            this.setState({
+              message: response.data.message,
+              successful: true,
+            })
+            this.props.router.navigate('/')
+          },
+          (error) => {
+            const resMessage =
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString()
+            this.setState({
+              successful: false,
+              message: resMessage,
+            })
+          }
+        )
+      }
+    } else {
+      const resMessage = 'số điện thoại không hợp lệ'
+      this.setState({
+        successful: false,
+        message: resMessage,
+      })
     }
   }
 
@@ -120,7 +128,7 @@ class Register extends Component {
             {!this.state.successful && (
               <div>
                 <div className="form-group">
-                  <label htmlFor="username">Username</label>
+                  <label htmlFor="username">Tên đăng nhập</label>
                   <Input
                     type="text"
                     className="form-control"
@@ -131,9 +139,9 @@ class Register extends Component {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="password">Password</label>
+                  <label htmlFor="password">Số điện thoại</label>
                   <Input
-                    type="password"
+                    type="text"
                     className="form-control"
                     name="password"
                     value={this.state.password}

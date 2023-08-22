@@ -8,8 +8,20 @@ import BoardHistory from '../components/BoardHistory'
 import BoardAdmin from '../components/BoardAdmin'
 import LoginAdmin from '../components/LoginAdmin'
 import PrivateRoute from './PrivateRoute'
+import authService from '../services/auth.service'
 
 const Router = () => {
+  const admin = authService.getCurrentUser()
+  console.log(admin)
+
+  const isAdmin = () => {
+    return admin.role === 'SUPER_ADMIN' || admin.role === 'ADMIN'
+  }
+
+  const isSupeerAdmin = () => {
+    return admin.role === 'SUPER_ADMIN'
+  }
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -24,9 +36,12 @@ const Router = () => {
           </PrivateRoute>
         }
       >
-        <Route path="/admin/users" element={<BoardUser />} />
-        <Route path="/admin/prize" element={<BoardPrize />} />
-        <Route path="/admin/history" element={<BoardHistory />} />
+        <Route path="/admin/users" element={isAdmin && <BoardUser />} />
+        <Route path="/admin/prize" element={isAdmin && <BoardPrize />} />
+        <Route
+          path="/admin/history"
+          element={isSupeerAdmin && <BoardHistory />}
+        />
       </Route>
     </Routes>
   )

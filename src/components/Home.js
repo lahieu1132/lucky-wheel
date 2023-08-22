@@ -2,6 +2,7 @@ import React from 'react'
 import WheelComponent from '../WheelComponent'
 import { useNavigate } from 'react-router-dom'
 import AuthService from '../services/auth.service'
+import UserService from '../services/user.service'
 import { useEffect } from 'react'
 import { useState, useRef } from 'react'
 import {
@@ -24,13 +25,15 @@ import MenuBookIcon from '@mui/icons-material/MenuBook'
 function Home() {
   const user = AuthService.getCurrentUser()
   const navigate = useNavigate()
-  const [anchorEl, setAnchorEl] = React.useState(null)
   const [listPrize, setListPrize] = useState([])
+  const [histories, setHistories] = useState([])
+  const [userInfo, setUserInfo] = useState({})
   const [message, setMessage] = useState({
     open: false,
     content: '',
     imgUrl: '',
   })
+
   const [open, setOpen] = React.useState(false)
 
   const descriptionElementRef = useRef(null)
@@ -39,10 +42,11 @@ function Home() {
     const res = await AuthService.updateSpinNumber(user.id)
     fetchUserInfo()
   }
-
+  console.log(userInfo)
   useEffect(() => {
     if (message.open) {
       onUpdateSpinNumber()
+      fetchHistory()
     }
   }, [message.open])
 
@@ -54,14 +58,25 @@ function Home() {
   const fetchUserInfo = async () => {
     try {
       const { data } = await AuthService.getUserInfo(user.id)
+      setUserInfo(data.data)
       localStorage.setItem('user', JSON.stringify({ ...user, ...data.data }))
     } catch (error) {
-      // navigate('/login')
+      navigate('/login')
     }
   }
+  const fetchHistory = async () => {
+    try {
+      const res = await UserService.getUserHistory(user.id)
+      setHistories(res.data.data?.reverse())
+    } catch (error) {}
+  }
+
   useEffect(() => {
     fetchData()
     fetchUserInfo()
+    fetchHistory()
+    if (user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN')
+      navigate('/login')
   }, [])
 
   const segColors = [
@@ -79,6 +94,7 @@ function Home() {
     '#fd2df1',
   ]
   const onFinished = async (winner) => {
+    fetchUserInfo()
     try {
       if (winner !== undefined) {
         await setTimeout(() => {
@@ -191,7 +207,7 @@ function Home() {
               fontWeight: '500',
             }}
           >
-            Còn lại: {user?.numberOfSpins} lượt quay
+            Còn lại: {userInfo?.numberOfSpins} lượt quay
           </p>
         )}
 
@@ -206,7 +222,7 @@ function Home() {
             contrastColor="white"
             buttonText="Start"
             isOnlyOnce={false}
-            size={290}
+            size={200}
             upDuration={500}
             downDuration={2000}
           />
@@ -268,13 +284,13 @@ function Home() {
             ref={descriptionElementRef}
             tabIndex={-1}
           >
-            {user?.prizeHistories?.reverse()?.map((item, index) => (
+            {histories?.map((item, index) => (
               <p
                 style={{
                   fontSize: '.8rem',
                 }}
               >
-                {item.dateTimeAt + ': '}
+                {item.created + ': '}
                 <span
                   style={{
                     fontSize: '1.2rem',

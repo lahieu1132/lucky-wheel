@@ -22,29 +22,51 @@ import {
   TextField,
 } from '@mui/material'
 import { useState, useRef } from 'react'
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein }
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-]
+import authService from '../services/auth.service'
+import { useEffect } from 'react'
 
 function BoardHistory() {
-  const [id, setId] = React.useState(0)
   const [open, setOpen] = useState(false)
   const [openCreateAdmin, setOpenCreateAdmin] = useState(false)
   const descriptionElementRef = useRef(null)
+  const [adminLists, setAdminList] = useState([])
+  const [historyList, setHistoryList] = useState([])
+  const [user, setUser] = useState({
+    username: '',
+    password: '',
+  })
 
-  const onRowDoubleClick = (row) => {
-    console.log(row)
-
+  const onRowDoubleClick = async (row) => {
+    await fetchAdminHistory(row.id)
     setOpen(true)
   }
+  const fetchAdminList = async () => {
+    try {
+      const res = await authService.getListAdmin()
+      setAdminList(res.data.data)
+    } catch (error) {}
+  }
+
+  const fetchAdminHistory = async (id) => {
+    try {
+      const res = await authService.getListAdminHistoryById(id)
+
+      setHistoryList(res.data.data)
+    } catch (error) {}
+  }
+
+  const createAdmin = async () => {
+    try {
+      const res = await authService.createAdmin(user.username, user.password)
+      console.log(res)
+
+      fetchAdminList()
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    fetchAdminList()
+  }, [])
 
   return (
     <div>
@@ -55,7 +77,7 @@ function BoardHistory() {
         alignItems="center"
         justifyContent="space-between"
       >
-        <h1>Danh sách quản lý</h1>
+        <h1>Danh sách quản lý( nhấn 2 lần để xem lịch sử )</h1>
         <Button variant="outlined" onClick={() => setOpenCreateAdmin(true)}>
           Thêm quản lý
         </Button>
@@ -64,57 +86,58 @@ function BoardHistory() {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Dessert (100g serving)</TableCell>
-              <TableCell align="right">Calories</TableCell>
-              <TableCell align="right">Fat&nbsp;(g)</TableCell>
-              <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell>
+              <TableCell align="center">số thứ tự</TableCell>
+              <TableCell align="center">Tên đăng nhập</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {adminLists.map((row, index) => (
               <TableRow
                 key={row.name}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 onDoubleClick={() => onRowDoubleClick(row)}
               >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
+                <TableCell align="center">{index}</TableCell>
+                <TableCell align="center">{row.username}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <Dialog open={openCreateAdmin}>
-        <DialogTitle>Thêm Thành Viên</DialogTitle>
+        <DialogTitle>Thêm quản lý</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Tên giải thưởng"
+            label="Tên đăng nhập"
+            value={user.username}
             fullWidth
             variant="standard"
-            // onChange={(e) => setPrize({ ...prize, name: e.target.value })}
+            onChange={(e) => setUser({ ...user, username: e.target.value })}
           />
           <TextField
             autoFocus
             margin="dense"
+            value={user.password}
             id="name"
-            label="Link ảnh"
+            label="Mật khẩu"
             fullWidth
             variant="standard"
-            // onChange={(e) => setPrize({ ...prize, imgUrl: e.target.value })}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenCreateAdmin(false)}>Hủy</Button>
-          <Button onClick={() => {}}>Thêm</Button>
+          <Button
+            onClick={() => {
+              createAdmin()
+              setOpenCreateAdmin(false)
+            }}
+          >
+            Thêm
+          </Button>
         </DialogActions>
       </Dialog>
       <Dialog
@@ -126,7 +149,11 @@ function BoardHistory() {
         maxWidth="100%"
       >
         <DialogTitle id="scroll-dialog-title">
-          Lịch sử cập nhật của admin:{' '}
+          Lịch sử cập nhật của admin:
+          {
+            adminLists?.find((item) => item.id == historyList[0]?.adminId)
+              ?.username
+          }
         </DialogTitle>
         <DialogContent>
           <DialogContentText
@@ -138,27 +165,23 @@ function BoardHistory() {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Dessert (100g serving)</TableCell>
-                    <TableCell align="right">Calories</TableCell>
-                    <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                    <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                    <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                    <TableCell align="center">Tên user</TableCell>
+                    <TableCell align="center">Số lượt quay</TableCell>
+                    <TableCell align="center">Giải thưởng</TableCell>
+                    <TableCell align="center">Thời gian</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
+                  {historyList.map((row) => (
                     <TableRow
                       key={row.name}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       onDoubleClick={() => onRowDoubleClick(row)}
                     >
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="center">{row.user}</TableCell>
+                      <TableCell align="center">{row.numberOfSpins}</TableCell>
+                      <TableCell align="center">{row.prize}</TableCell>
+                      <TableCell align="center">{row.updatedAt}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

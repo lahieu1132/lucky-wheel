@@ -1,17 +1,33 @@
-import axios from 'axios';
-import authHeader from './auth-header';
+import axios from 'axios'
+import authHeader from './auth-header'
 
-const API_URL = "http://192.168.1.7:8080/api/";
+const API_URL = 'http://192.168.1.13:8080/api/'
 
 class UserService {
-  getPublicContent() {
-    return axios.get(API_URL + 'all');
+  loginUser(username, tel) {
+    return axios
+      .post(API_URL + 'app/login', { username, tel })
+      .then((response) => {
+        if (response.data.data.token) {
+          localStorage.setItem('user', JSON.stringify(response.data.data))
+        }
+        return response.data
+      })
   }
 
-  updateSpinNumber(id) {
-    return axios.put(`${API_URL}app/users/${id}/decrease-number-spin`, { headers: authHeader() });
+  getUserInfo(name) {
+    return axios.get(API_URL + 'app/users', {
+      params: {
+        name,
+      },
+    })
   }
 
+  getUserHistory(id) {
+    return axios.get(API_URL + 'app/users/' + id + '/histories', {
+      headers: authHeader(),
+    })
+  }
 }
 
-export default new UserService();
+export default new UserService()

@@ -34,10 +34,9 @@ function LoginAdmin(props) {
     e.preventDefault()
     setMessage('')
     setLoading(true)
-
     AuthService.login(username, password).then(
       (res) => {
-        if (res.data.role === 'ADMIN') {
+        if (res.data.role === 'SUPER_ADMIN' || res.data.role === 'ADMIN') {
           props.router.navigate('/admin')
         }
       },
