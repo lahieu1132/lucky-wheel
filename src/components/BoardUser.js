@@ -121,6 +121,13 @@ function BoardUser() {
     }
   }
 
+  const deleteUserById = async (id) => {
+    try {
+      const res = await authService.deleteUserById(id)
+      fetchUser()
+    } catch (error) {}
+  }
+
   useEffect(() => {
     fetchUser()
     fetchPrizes()

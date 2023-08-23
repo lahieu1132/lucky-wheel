@@ -2,6 +2,7 @@ import axios from 'axios'
 import authHeader from './auth-header'
 
 const API_URL = 'http://192.168.1.13:8080/api/'
+// const API_URL = 'http://64.176.45.22:8080/api/'
 
 class UserService {
   loginUser(username, tel) {

@@ -2,6 +2,7 @@ import axios from 'axios'
 import authHeader from './auth-header'
 
 const API_URL = 'http://192.168.1.13:8080/api/'
+// const API_URL = 'http://64.176.45.22:8080/api/'
 
 class AuthService {
   login(username, password) {
@@ -57,14 +58,27 @@ class AuthService {
     return axios.get(API_URL + 'admin/users', { headers: authHeader() })
   }
 
+  deleteUserById(id) {
+    return axios.delete(API_URL + 'admin/users/' + id, {
+      headers: authHeader(),
+    })
+  }
+
   getListAdmin() {
     return axios.get(API_URL + 'super-admin/admins', { headers: authHeader() })
   }
 
-  getListAdminHistoryById(id) {
-    return axios.get(`${API_URL}admin/${id}/histories`, {
-      headers: authHeader(),
-    })
+  getListAdminHistoryById(id, startDate, endDate) {
+    return axios.post(
+      `${API_URL}admin/${id}/histories`,
+      {
+        startDate,
+        endDate,
+      },
+      {
+        headers: authHeader(),
+      }
+    )
   }
 
   createUser(username, tel, numberOfSpins, prize) {

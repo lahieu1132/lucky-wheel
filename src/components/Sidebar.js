@@ -101,21 +101,24 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Quản lý Giải thưởng"
-              to="/admin/prize"
-              icon={<EmojiEventsIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+
             {user.role === 'SUPER_ADMIN' && (
-              <Item
-                title="Quản lý admin"
-                to="/admin/history"
-                icon={<ContactsOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
+              <>
+                <Item
+                  title="Quản lý Giải thưởng"
+                  to="/admin/prize"
+                  icon={<EmojiEventsIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Quản lý admin"
+                  to="/admin/history"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              </>
             )}
             <MenuItem
               style={{

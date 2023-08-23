@@ -20,6 +20,8 @@ function BoardPrize() {
   })
   const [open, setOpen] = useState(false)
 
+  const admin = AuthService.getCurrentUser()
+
   const fetch = async () => {
     const response = await AuthService.getListPrizes()
     setListPrize(response.data.data)
@@ -101,113 +103,117 @@ function BoardPrize() {
   }
 
   return (
-    <div className="board prize">
-      <Box
-        display="flex"
-        gap={2}
-        flexDirection="row"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <h1>Danh sách Giải thưởng</h1>
-        <Button variant="outlined" onClick={() => setOpen(true)}>
-          Thêm giải thưởng
-        </Button>
-      </Box>
-      <Box display="flex" gap={2} flexDirection="column">
-        <Box
-          display="flex"
-          gap={2}
-          flexDirection="row"
-          alignItems="center"
-          justifyContent="space-between"
-          width="80%"
-        >
-          <p>Tên giải thưởng</p>
-          <p>Link ảnh</p>
-        </Box>
-        {listPrize?.map((item, index) => (
+    <>
+      {admin.role === 'SUPER_ADMIN' && (
+        <div className="board prize">
           <Box
             display="flex"
             gap={2}
             flexDirection="row"
             alignItems="center"
-            key={index}
+            justifyContent="space-between"
           >
-            <TextField
-              hiddenLabel
-              id="filled-hidden-label-small"
-              value={item.name}
-              variant="filled"
-              size="small"
-              style={{ marginTop: '10px', width: '100%' }}
-              onChange={(event) => onUpdateName(event.target.value, index)}
-            />
-            <TextField
-              id="filled-hidden-label-small"
-              value={item.imgUrl}
-              variant="filled"
-              size="small"
-              style={{ marginTop: '10px', width: '100%' }}
-              onChange={(event) => onUpdateImg(event.target.value, index)}
-            />
-            <Button
-              variant="contained"
-              onClick={() =>
-                onClickUpdate(item.id, item.name, item.imgUrl, index)
-              }
-            >
-              Cập nhật
-            </Button>
-            <Button variant="contained" onClick={() => onDelete(item.id)}>
-              Xóa
+            <h1>Danh sách Giải thưởng</h1>
+            <Button variant="outlined" onClick={() => setOpen(true)}>
+              Thêm giải thưởng
             </Button>
           </Box>
-        ))}
-      </Box>
+          <Box display="flex" gap={2} flexDirection="column">
+            <Box
+              display="flex"
+              gap={2}
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="space-between"
+              width="80%"
+            >
+              <p>Tên giải thưởng</p>
+              <p>Link ảnh</p>
+            </Box>
+            {listPrize?.map((item, index) => (
+              <Box
+                display="flex"
+                gap={2}
+                flexDirection="row"
+                alignItems="center"
+                key={index}
+              >
+                <TextField
+                  hiddenLabel
+                  id="filled-hidden-label-small"
+                  value={item.name}
+                  variant="filled"
+                  size="small"
+                  style={{ marginTop: '10px', width: '100%' }}
+                  onChange={(event) => onUpdateName(event.target.value, index)}
+                />
+                <TextField
+                  id="filled-hidden-label-small"
+                  value={item.imgUrl}
+                  variant="filled"
+                  size="small"
+                  style={{ marginTop: '10px', width: '100%' }}
+                  onChange={(event) => onUpdateImg(event.target.value, index)}
+                />
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    onClickUpdate(item.id, item.name, item.imgUrl, index)
+                  }
+                >
+                  Cập nhật
+                </Button>
+                <Button variant="contained" onClick={() => onDelete(item.id)}>
+                  Xóa
+                </Button>
+              </Box>
+            ))}
+          </Box>
 
-      <Snackbar
-        open={message.open}
-        autoHideDuration={3000}
-        onClose={() => setMessage({ ...message, open: false })}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert
-          onClose={() => setMessage({ ...message, open: false })}
-          severity={message.severity}
-          sx={{ width: '100%' }}
-        >
-          {message.content}
-        </Alert>
-      </Snackbar>
-      <Dialog open={open}>
-        <DialogTitle>Thêm giải thưởng</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Tên giải thưởng"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setPrize({ ...prize, name: e.target.value })}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Link ảnh"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setPrize({ ...prize, imgUrl: e.target.value })}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Hủy</Button>
-          <Button onClick={CreatePrize}>Thêm</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+          <Snackbar
+            open={message.open}
+            autoHideDuration={3000}
+            onClose={() => setMessage({ ...message, open: false })}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Alert
+              onClose={() => setMessage({ ...message, open: false })}
+              severity={message.severity}
+              sx={{ width: '100%' }}
+            >
+              {message.content}
+            </Alert>
+          </Snackbar>
+          <Dialog open={open}>
+            <DialogTitle>Thêm giải thưởng</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Tên giải thưởng"
+                fullWidth
+                variant="standard"
+                onChange={(e) => setPrize({ ...prize, name: e.target.value })}
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Link ảnh"
+                fullWidth
+                variant="standard"
+                onChange={(e) => setPrize({ ...prize, imgUrl: e.target.value })}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpen(false)}>Hủy</Button>
+              <Button onClick={CreatePrize}>Thêm</Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+      )}
+    </>
   )
 }
 
