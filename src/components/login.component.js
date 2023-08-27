@@ -110,7 +110,7 @@ function Login(props) {
               <span>Login</span>
             </button>
           </div>
-          <p>
+          <p style={{ fontSize: 18, color: 'white' }}>
             Tạo tài khoản mới <Link to="/register">tại đây</Link>{' '}
           </p>
           {message && (

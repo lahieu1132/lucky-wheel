@@ -7,12 +7,14 @@ import BoardUser from '../components/BoardUser'
 import BoardHistory from '../components/BoardHistory'
 import BoardAdmin from '../components/BoardAdmin'
 import LoginAdmin from '../components/LoginAdmin'
+import HomeTest from '../components/PlayGame'
 import PrivateRoute from './PrivateRoute'
 
 const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      {/* <Route path="/game" element={<HomeTest />} /> */}
       <Route path="/admin/login" element={<LoginAdmin />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

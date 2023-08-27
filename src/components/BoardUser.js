@@ -12,8 +12,6 @@ function BoardUser() {
   const [listUsers, setListUsers] = useState([])
   const [filterListUser, setFilterListUsers] = useState([])
   const [searchValue, setSearchValue] = useState('')
-  const [numberOfSpins, setNumberOfSpins] = useState('')
-  const [prize, setPrize] = useState('')
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState({
     username: '',
@@ -22,14 +20,12 @@ function BoardUser() {
     tel: '',
   })
   const admin = authService.getCurrentUser()
-
   const [listPrizes, setListPrizes] = useState([])
   const [message, setMessage] = useState({
     open: false,
     content: '',
     severity: '',
   })
-
   useEffect(() => {
     if (searchValue !== '') {
       setFilterListUsers(() => {
@@ -37,9 +33,8 @@ function BoardUser() {
       })
     } else setFilterListUsers([...listUsers])
   }, [searchValue])
-
   const fetchUser = async () => {
-    const response = await AuthService.getListUsers()
+    const response = await AuthService.getListUsers(admin.role, admin.id)
     setListUsers(response.data.data)
     setFilterListUsers(response.data.data)
   }
@@ -69,7 +64,6 @@ function BoardUser() {
 
   const createUser = async () => {
     const phoneNumberRegex = /^(\+84|0)(\d){9,10}$/
-    console.log(Number(user.numberOfSpins))
     setMessage({ ...message, open: false })
     try {
       phoneNumberRegex.test(user.tel)
@@ -77,7 +71,8 @@ function BoardUser() {
         user.username,
         user.tel,
         user.numberOfSpins,
-        user.prize
+        user.prize,
+        admin.id
       )
       fetchUser()
       setOpen(false)
@@ -86,10 +81,9 @@ function BoardUser() {
         open: true,
         severity: 'success',
       })
-      console.log(res)
     } catch (error) {
       setMessage({
-        content: error.response.data.message,
+        content: 'Lỗi khi thêm, vui lòng thử lại',
         open: true,
         severity: 'error',
       })
@@ -268,6 +262,12 @@ function BoardUser() {
                 }
               >
                 Cập nhật
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => deleteUserById(item.id)}
+              >
+                Xóa
               </Button>
             </div>
           ))}

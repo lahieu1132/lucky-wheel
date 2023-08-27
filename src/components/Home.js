@@ -1,19 +1,10 @@
 import React from 'react'
-import WheelComponent from '../WheelComponent'
 import { useNavigate } from 'react-router-dom'
 import AuthService from '../services/auth.service'
 import UserService from '../services/user.service'
 import { useEffect } from 'react'
 import { useState, useRef } from 'react'
-import {
-  Tooltip,
-  IconButton,
-  Avatar,
-  Button,
-  Box,
-  MenuItem,
-  Menu,
-} from '@mui/material'
+import { Button, Box } from '@mui/material'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
@@ -21,11 +12,19 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import LogoutIcon from '@mui/icons-material/Logout'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
+import { Wheel } from 'react-custom-roulette'
+
+import Confetti from './Confetti'
 
 function Home() {
   const user = AuthService.getCurrentUser()
   const navigate = useNavigate()
-  const [listPrize, setListPrize] = useState([])
+  const [listPrize, setListPrize] = useState([
+    {
+      option: 'dâsdasd',
+      style: { backgroundColor: '#e83d45', textColor: 'white' },
+    },
+  ])
   const [histories, setHistories] = useState([])
   const [userInfo, setUserInfo] = useState({})
   const [message, setMessage] = useState({
@@ -33,16 +32,14 @@ function Home() {
     content: '',
     imgUrl: '',
   })
-
+  const [prize, setPrize] = useState('')
   const [open, setOpen] = React.useState(false)
-
   const descriptionElementRef = useRef(null)
 
   const onUpdateSpinNumber = async () => {
-    const res = await AuthService.updateSpinNumber(user.id)
+    await AuthService.updateSpinNumber(user.id)
     fetchUserInfo()
   }
-  console.log(userInfo)
   useEffect(() => {
     if (message.open) {
       onUpdateSpinNumber()
@@ -59,7 +56,11 @@ function Home() {
     try {
       const { data } = await AuthService.getUserInfo(user.id)
       setUserInfo(data.data)
-      localStorage.setItem('user', JSON.stringify({ ...user, ...data.data }))
+      localStorage.setItem(
+        'user',
+        JSON.stringify({ ...user, ...data.data, prize: '' })
+      )
+      setPrize(data.data.prize)
     } catch (error) {
       navigate('/login')
     }
@@ -70,7 +71,35 @@ function Home() {
       setHistories(res.data.data?.reverse())
     } catch (error) {}
   }
+  const [mustSpin, setMustSpin] = useState(false)
 
+  const handleSpinClick = async () => {
+    await fetchUserInfo()
+    if (user?.numberOfSpins == 0) {
+      setMessage({
+        ...message,
+        content: 'bạn đã hết lượt quay',
+        open: true,
+      })
+    } else setMustSpin(true)
+  }
+
+  const handleSpinStop = async (e) => {
+    try {
+      setMustSpin(false)
+      setMessage({
+        ...message,
+        content:
+          'Chúc mừng bạn đã trúng ' +
+          listPrize[listPrize.findIndex((item) => item.name == prize)].name,
+        open: true,
+        imgUrl:
+          listPrize[listPrize.findIndex((item) => item.name == prize)].imgUrl,
+        winner:
+          listPrize[listPrize.findIndex((item) => item.name == prize)].name,
+      })
+    } catch (error) {}
+  }
   useEffect(() => {
     fetchData()
     fetchUserInfo()
@@ -80,66 +109,38 @@ function Home() {
   }, [])
 
   const segColors = [
-    '#EE4040',
-    '#F0CF50',
-    '#815CD1',
-    '#3DA5E0',
-    '#34A24F',
+    '#ff4942',
     '#F9AA1F',
+    '#9800ff',
+    '#ff4942',
+    '#00c2ff',
+    '#ffa800',
     '#EC3F3F',
-    '#FF9000',
-    '#4dfd2d',
-    '#2de0fd',
-    '#2d3ffd',
-    '#fd2df1',
+    '#ff00ff',
+    '#8f00fd',
+    '#F9AA1F',
+    '#ccc000',
+    '#00f1ff',
+    '#ff4942',
+    '#F9AA1F',
+    '#9800ff',
+    '#ff4942',
+    '#00c2ff',
+    '#ffa800',
+    '#EC3F3F',
+    '#ff00ff',
+    '#8f00fd',
+    '#F9AA1F',
+    '#ccc000',
+    '#00f1ff',
   ]
-  const onFinished = async (winner) => {
-    fetchUserInfo()
-    try {
-      if (winner !== undefined) {
-        await setTimeout(() => {
-          if (user?.numberOfSpins == 0) {
-            setMessage({
-              ...message,
-              content: 'bạn đã hết lượt quay',
-              open: true,
-            })
-          } else {
-            const imgUrl = listPrize.find(
-              (item) => item.name.trim() === winner.trim()
-            ).imgUrl
-            setMessage({
-              ...message,
-              content: 'Chúc mừng bạn đã trúng ' + winner,
-              open: true,
-              imgUrl: imgUrl,
-              winner: winner,
-            })
-          }
-        }, 1500)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   return (
     <div className=" home-user">
       <div className="container home-user-main">
-        <div className="ladi-image">
-          <div className="ladi-image-background"></div>
-          <div className="ladi-image-background-2"></div>
-        </div>
-        {!user ? (
-          <>
-            <button className="button" onClick={() => navigate('/login')}>
-              Đăng nhập
-            </button>
-            <div class="loader">
-              <span class="loader-text">Đăng nhập để nhận quà</span>
-            </div>
-          </>
-        ) : (
+        {message.open && <Confetti />}
+
+        {user && (
           <div
             style={{
               display: 'flex',
@@ -150,12 +151,12 @@ function Home() {
             <span
               style={{
                 textAlign: 'center',
-                color: '#fff',
-                fontSize: '20px',
+                color: '#EE4040',
+                fontSize: '14px',
                 fontWeight: '500',
               }}
             >
-              chào mừng {user.username}
+              Chào mừng {user.username}
             </span>
             <Box
               onClick={() => {
@@ -197,35 +198,63 @@ function Home() {
             </Box>
           </div>
         )}
-        <h2>Vòng quay may mắn</h2>
+        <div className="ladi-image " style={{ gap: '10px' }}>
+          <div className="ladi-image-logo"></div>
+          <h2>Vòng quay may mắn</h2>
+        </div>
         {user && (
           <p
             style={{
               textAlign: 'center',
-              color: '#fff',
+              color: '#EE4040',
               fontSize: '20px',
               fontWeight: '500',
+              marginBottom: '16px',
             }}
           >
             Còn lại: {userInfo?.numberOfSpins} lượt quay
           </p>
         )}
-
-        <div className="wheel">
-          <WheelComponent
-            segments={listPrize.map((item) => item.name)}
-            segColors={segColors}
-            winningSegment={user?.prize || ''}
-            onFinished={(winner) => onFinished(winner)}
-            primaryColor="black"
-            primaryColoraround="#ffffffb4"
-            contrastColor="white"
-            buttonText="Start"
-            isOnlyOnce={false}
-            size={200}
-            upDuration={500}
-            downDuration={2000}
+        <section
+          className="relative justify-evenly align-middle flex sm:flex flex-col rotate-45"
+          style={{
+            'align-items': 'center',
+          }}
+        >
+          <Wheel
+            mustStartSpinning={mustSpin}
+            prizeNumber={listPrize.findIndex((item) => item.name == prize)}
+            data={listPrize?.map((item, index) => ({
+              option:
+                item.name?.split(' ').length > 4
+                  ? item.name?.split(' ').slice(0, 4).join(' ') + '...'
+                  : item.name,
+              style: {
+                backgroundColor: segColors[index],
+                textColor: 'white',
+                whiteSpace: 'data',
+              },
+            }))}
+            spinDuration={0.5}
+            onStopSpinning={handleSpinStop}
+            fontSize={16}
+            radiusLineWidth={0}
+            disableInitialAnimation
+            textDistance={55}
+            pointerProps="none"
           />
+          <div className={mustSpin ? 'wheel-bg active' : 'wheel-bg'}></div>
+          <div className="absolute top-1/2 left-1/2 z-50 translate-y-[-50%] ">
+            <button
+              whileHover="hover"
+              className="game_content_spin button"
+              onClick={handleSpinClick}
+            ></button>
+          </div>
+        </section>
+        <div className="ladi-image">
+          <div className="ladi-image-background"></div>
+          <div className="ladi-image-background-2"></div>
         </div>
       </div>
       <Dialog
@@ -260,7 +289,7 @@ function Home() {
               variant="contained"
               onClick={() => {
                 setMessage({ ...message, open: false })
-                window.location.reload()
+                // window.location.reload()
               }}
               autoFocus
             >

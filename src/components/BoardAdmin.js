@@ -13,10 +13,10 @@ function BoardAdmin() {
 
   const checkToken = async () => {
     try {
-      const response = await AuthService.getListUsers()
+      const response = await AuthService.getListUsers(user.role, user.id)
       setIsLogin(true)
     } catch (error) {
-      setIsLogin(false)
+      navigate('/admin/login')
     }
   }
 

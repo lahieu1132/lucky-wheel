@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 label {
   display: block;
   margin-top: 10px;
@@ -104,6 +108,26 @@ main {
 
 .home-user {
   padding-top: 20px;
+
+  section {
+    transform: scale(1.1) rotate(45deg);
+    .wheel-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background-image: url('./assets/zyro-image.png');
+      background-repeat: no-repeat;
+      background-size: contain;
+      z-index: 10;
+      &.active {
+        transform: rotate(calc(4 * 360deg));
+        transition: transform 5s ease;
+      }
+      overflow: hidden;
+    }
+  }
   .home-user-main {
     display: flex;
     align-items: center;
@@ -114,70 +138,39 @@ main {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: rgb(131, 58, 180);
-  background: linear-gradient(
-    90deg,
-    rgba(131, 58, 180, 1) 0%,
-    rgba(253, 29, 29, 1) 50%,
-    rgba(252, 176, 69, 1) 100%
-  );
+  background-image: url('../src/assets/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
   button.button {
     --border-radius: 15px;
     --border-width: 4px;
     appearance: none;
     position: relative;
-    padding: 1em 2em;
+    width: 3.4rem;
+    height: 3.4rem;
     border: 0;
-    background-color: #212121;
+    background-image: url('https://w.ladicdn.com/source/spin-btn1.svg');
     font-family: 'Roboto', Arial, 'Segoe UI', sans-serif;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 500;
     color: #fff;
-    z-index: 2;
-    border-radius: 15px;
+    z-index: 16;
+    border-radius: 50%;
     left: 50%;
-    transform: translateX(-100%);
+    transform: translateX(-100%) rotate(-45deg);
+    cursor: pointer;
   }
 
-  button.button::after {
-    --m-i: linear-gradient(#000, #000);
-    --m-o: content-box, padding-box;
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    padding: var(--border-width);
-    border-radius: var(--border-radius);
-    background-image: conic-gradient(
-      #488cfb,
-      #29dbbc,
-      #ddf505,
-      #ff9f0e,
-      #e440bb,
-      #655adc,
-      #488cfb
-    );
-    -webkit-mask-image: var(--m-i), var(--m-i);
-    mask-image: var(--m-i), var(--m-i);
-    -webkit-mask-origin: var(--m-o);
-    mask-origin: var(--m-o);
-    -webkit-mask-clip: var(--m-o);
-    mask-composite: exclude;
-    -webkit-mask-composite: destination-out;
-    filter: hue-rotate(0);
-    animation: rotate-hue linear 500ms infinite;
-    animation-play-state: paused;
-  }
-
-  button.button:hover::after {
+  button.button:hover {
     animation-play-state: running;
   }
 
   @keyframes rotate-hue {
+    from {
+      transform: scale(1.2);
+    }
     to {
-      filter: hue-rotate(1turn);
+      transform: scale(1);
     }
   }
 
@@ -193,14 +186,9 @@ main {
   h2 {
     text-align: center;
     text-transform: uppercase;
-    background: linear-gradient(
-      0deg,
-      rgba(34, 193, 195, 1) 0%,
-      rgba(253, 187, 45, 1) 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 28px;
+    color: red;
+    font-weight: 600;
+    font-size: 18px;
     position: relative;
     @media screen and (min-width: 600px) {
       font-size: 4vw;
@@ -246,48 +234,48 @@ main {
     }
   }
 
-  .ladi-image-background {
-    background-repeat: no-repeat;
-    background-position: left top;
-    background-size: cover;
-    background-attachment: scroll;
-    background-origin: content-box;
-    position: absolute;
-    width: 144.642px;
-    height: 153.22px;
-    background-image: url('https://w.ladicdn.com/5fa7b206ca2d594b2ae17e2c/than-tai4-16134742652421068908802-20230604134737-phbkf.gif');
-    top: 16%;
-    left: 2%;
-    @media screen and (min-width: 600px) {
-      left: 15%;
-      top: 15%;
+  .ladi-image {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10vw;
+    .ladi-image-logo {
+      background-repeat: no-repeat;
+      background-position: top top;
+      background-size: cover;
+      background-image: url('./assets/logo.png');
+      width: 120px;
+      height: 100px;
     }
-  }
-  .ladi-image-background-2 {
-    width: 144.642px;
-    height: 153.22px;
-    background-repeat: no-repeat;
-    background-position: left top;
-    background-size: cover;
-    background-attachment: scroll;
-    background-origin: content-box;
-    position: absolute;
-    background-image: url('https://w.ladicdn.com/s450x450/5fa7b206ca2d594b2ae17e2c/pngegg-1-20230605090235-yx4iw.png');
-    right: 5%;
-    bottom: 5%;
-    @media screen and (min-width: 600px) {
-      right: 35%;
-      bottom: 5%;
+    .ladi-image-background {
+      background-repeat: no-repeat;
+      background-position: left top;
+      background-size: cover;
+      background-attachment: scroll;
+      background-origin: content-box;
+      width: 144.642px;
+      height: 153.22px;
+      background-image: url('https://w.ladicdn.com/5fa7b206ca2d594b2ae17e2c/than-tai4-16134742652421068908802-20230604134737-phbkf.gif');
+      top: 16%;
+      left: 2%;
+      @media screen and (min-width: 600px) {
+        left: 15%;
+        top: 15%;
+      }
     }
-  }
-  .wheel {
-    position: relative;
-    bottom: 30px;
-  }
-  canvas {
-    transform: scale(0.8);
-    @media screen and (min-width: 600px) {
-      transform: scale(1);
+    .ladi-image-background-2 {
+      width: 144.642px;
+      height: 153.22px;
+      background-repeat: no-repeat;
+      background-position: left top;
+      background-size: cover;
+      background-attachment: scroll;
+      background-origin: content-box;
+      background-image: url('https://w.ladicdn.com/s450x450/5fa7b206ca2d594b2ae17e2c/pngegg-1-20230605090235-yx4iw.png');
+      @media screen and (min-width: 600px) {
+        right: 15%;
+        bottom: 5%;
+      }
     }
   }
 }
@@ -306,17 +294,89 @@ main {
   h2 {
     text-align: center;
     text-transform: uppercase;
-    background: linear-gradient(
-      0deg,
-      rgba(34, 193, 195, 1) 0%,
-      rgba(253, 187, 45, 1) 100%
-    );
+    color: red;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 28px;
     position: relative;
     @media screen and (min-width: 600px) {
       font-size: 20px;
+    }
+  }
+}
+#wheel {
+  position: relative;
+  overflow: hidden;
+  width: 100vw;
+  min-height: 200vh;
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: 100%;
+  .big-wheel-box {
+    position: absolute;
+    top: 1.7rem;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 0;
+    // background-image: url('~@/assets/img/lucky-whell/disk_bg.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    padding: 3.5rem;
+    .prize-name {
+      position: relative;
+      //display: block;
+      left: 0.13rem;
+      right: 0.13rem;
+      top: 2rem;
+      //width: 0.1rem;
+      //word-wrap:break-word;
+      //word-break:normal;
+      font-size: 1.5rem;
+      font-weight: bolder;
+      text-align: center;
+      color: orange;
+    }
+    .prize-img {
+      position: absolute;
+      top: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 5rem;
+      max-height: 5rem;
+    }
+    .btn-go {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20%;
+    }
+  }
+}
+
+.__big-wheel {
+  position: relative;
+  display: inline-block;
+  .wrap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    .prize-wrap {
+      position: absolute;
+      left: 25%;
+      top: 0;
+      width: 50%;
+      height: 50%;
+      .item {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        transform-origin: center bottom;
+      }
     }
   }
 }

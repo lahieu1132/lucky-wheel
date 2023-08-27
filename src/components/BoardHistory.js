@@ -43,7 +43,7 @@ function BoardHistory() {
   const fetchAdminList = async () => {
     try {
       const res = await authService.getListAdmin()
-      setAdminList(res.data.data)
+      setAdminList([...res.data.data])
     } catch (error) {}
   }
 
@@ -51,8 +51,8 @@ function BoardHistory() {
     try {
       const res = await authService.getListAdminHistoryById(
         id,
-        valueStart,
-        valueEnd
+        dayjs(valueStart).format('YYYY-MM-DD'),
+        dayjs(valueEnd).format('YYYY-MM-DD')
       )
 
       setHistoryList(res.data.data)
@@ -81,21 +81,21 @@ function BoardHistory() {
             alignItems="center"
             justifyContent="space-between"
           >
-            <h1>Danh sách quản lý( nhấn 2 lần để xem lịch sử )</h1>
+            <h1>Danh sách quản lý</h1>
             <Button variant="outlined" onClick={() => setOpenCreateAdmin(true)}>
               Thêm quản lý
             </Button>
           </Box>
           <Box>
             <DatePicker
-              label="Controlled picker"
+              label="ngày bắt đầu"
               value={valueStart}
               onChange={(newValue) => {
                 setValueStart(dayjs(newValue).format('YYYY-MM-DD'))
               }}
             />
             <DatePicker
-              label="Controlled picker"
+              label="ngày kết thúc"
               value={valueEnd}
               onChange={(newValue) => {
                 setValueEnd(dayjs(newValue).format('YYYY-MM-DD'))
@@ -103,7 +103,10 @@ function BoardHistory() {
             />
           </Box>
 
-          <TableContainer component={Paper}>
+          <TableContainer
+            component={Paper}
+            style={{ overflowY: 'scroll', height: 'calc(100vh - 200px)' }}
+          >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
@@ -116,10 +119,19 @@ function BoardHistory() {
                   <TableRow
                     key={row.name}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    onDoubleClick={() => onRowDoubleClick(row)}
                   >
                     <TableCell align="center">{index}</TableCell>
-                    <TableCell align="center">{row.username}</TableCell>
+                    <TableCell align="center" style={{ fontSize: 24 }}>
+                      {row.username}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        variant="contained"
+                        onClick={() => onRowDoubleClick(row)}
+                      >
+                        Lịch sử
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

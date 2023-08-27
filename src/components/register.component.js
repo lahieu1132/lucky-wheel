@@ -128,7 +128,12 @@ class Register extends Component {
             {!this.state.successful && (
               <div>
                 <div className="form-group">
-                  <label htmlFor="username">Tên đăng nhập</label>
+                  <label
+                    htmlFor="username"
+                    style={{ fontSize: 20, color: 'white' }}
+                  >
+                    Tên đăng nhập
+                  </label>
                   <Input
                     type="text"
                     className="form-control"
@@ -139,7 +144,12 @@ class Register extends Component {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="password">Số điện thoại</label>
+                  <label
+                    htmlFor="password"
+                    style={{ fontSize: 20, color: 'white' }}
+                  >
+                    Số điện thoại
+                  </label>
                   <Input
                     type="text"
                     className="form-control"
@@ -153,7 +163,7 @@ class Register extends Component {
                 <div className="form-group">
                   <button className="btn btn-primary btn-block">Sign Up</button>
                 </div>
-                <p>
+                <p style={{ fontSize: 16, color: 'white' }}>
                   Đã có tài khoản đăng nhập <Link to="/login">tại đây</Link>{' '}
                 </p>
               </div>

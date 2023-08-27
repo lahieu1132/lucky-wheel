@@ -62,7 +62,6 @@ const WheelComponent = ({
   }
 
   const spin = () => {
-    console.log('first')
     isStarted = true
     // onRotate();
     if (timerHandle === 0) {

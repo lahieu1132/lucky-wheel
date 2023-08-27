@@ -1,8 +1,8 @@
 import axios from 'axios'
 import authHeader from './auth-header'
 
-const API_URL = 'http://192.168.1.13:8080/api/'
-// const API_URL = 'http://64.176.45.22:8080/api/'
+// const API_URL = 'http://192.168.1.16:8080/api/'
+const API_URL = 'http://64.176.45.22:8080/api/'
 
 class AuthService {
   login(username, password) {
@@ -54,8 +54,22 @@ class AuthService {
   getListPrizes() {
     return axios.get(API_URL + 'app/prizes')
   }
-  getListUsers() {
-    return axios.get(API_URL + 'admin/users', { headers: authHeader() })
+  getListUsers(role, id) {
+    if (role === 'SUPER_ADMIN')
+      return axios.get(API_URL + 'admin/users', { headers: authHeader() })
+    else
+      return axios.get(
+        API_URL + 'admin/list-users-by',
+        {
+          params: {
+            adminId: id,
+          },
+          headers: authHeader(),
+        },
+        {
+          headers: authHeader(),
+        }
+      )
   }
 
   deleteUserById(id) {
@@ -69,19 +83,16 @@ class AuthService {
   }
 
   getListAdminHistoryById(id, startDate, endDate) {
-    return axios.post(
-      `${API_URL}admin/${id}/histories`,
-      {
+    return axios.get(`${API_URL}admin/${id}/histories`, {
+      params: {
         startDate,
         endDate,
       },
-      {
-        headers: authHeader(),
-      }
-    )
+      headers: authHeader(),
+    })
   }
 
-  createUser(username, tel, numberOfSpins, prize) {
+  createUser(username, tel, numberOfSpins, prize, adminId) {
     return axios.post(
       API_URL + 'admin/users',
       {
@@ -89,6 +100,7 @@ class AuthService {
         prize,
         numberOfSpins,
         tel,
+        adminId,
       },
       { headers: authHeader() }
     )
@@ -116,7 +128,7 @@ class AuthService {
 
   updatePrizeById(id, name, imgUrl) {
     return axios.put(
-      API_URL + 'admin/prizes/' + id,
+      API_URL + 'super-admin/prizes/' + id,
       {
         name: name,
         imgUrl: imgUrl,
@@ -126,14 +138,14 @@ class AuthService {
   }
 
   deletePrizeById(id) {
-    return axios.delete(API_URL + 'admin/prizes/' + id, {
+    return axios.delete(API_URL + 'super-admin/prizes/' + id, {
       headers: authHeader(),
     })
   }
 
   createPrize(name, imgUrl) {
     return axios.post(
-      API_URL + 'admin/prizes',
+      API_URL + 'super-admin/prizes',
       {
         name: name,
         imgUrl: imgUrl,
