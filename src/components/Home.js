@@ -198,9 +198,14 @@ function Home() {
             </Box>
           </div>
         )}
-        <div className="ladi-image " style={{ gap: '10px' }}>
+        <div className="ladi-image " style={{ gap: '0' }}>
           <div className="ladi-image-logo"></div>
-          <h2>Vòng quay may mắn</h2>
+          <button data-text="Awesome" class="buttonpma">
+            <span class="actual-text">&nbsp;Vòng quay may mắn&nbsp;</span>
+            <span class="hover-text" aria-hidden="true">
+              &nbsp;Vòng quay may mắn&nbsp;
+            </span>
+          </button>
         </div>
         {user && (
           <p

@@ -111,6 +111,9 @@ main {
 
   section {
     transform: scale(1.1) rotate(45deg);
+    img {
+      display: none !important;
+    }
     .wheel-bg {
       position: absolute;
       width: 100%;
@@ -188,6 +191,7 @@ main {
     text-transform: uppercase;
     color: red;
     font-weight: 600;
+    font-weight: 700;
     font-size: 18px;
     position: relative;
     @media screen and (min-width: 600px) {
@@ -378,5 +382,67 @@ main {
         transform-origin: center bottom;
       }
     }
+  }
+}
+/* === removing default button style ===*/
+.buttonpma {
+  margin: 0;
+  height: auto;
+  background: transparent;
+  padding: 0;
+  border: none;
+  animation: r1 3s ease-in-out infinite;
+  /*linear*/
+  // border: 4px #d33b3b solid;
+  border-radius: 14px;
+}
+
+/* button styling */
+.buttonpma {
+  --border-right: 6px;
+  --text-stroke-color: red;
+  --animation-color: #d33b3b;
+  --fs-size: 1em;
+  letter-spacing: 3px;
+  text-decoration: none;
+  font-size: 18px;
+  position: relative;
+  @media screen and (min-width: 600px) {
+    font-size: 2.5rem;
+  }
+  font-family: 'Arial';
+  position: relative;
+  text-transform: uppercase;
+  color: transparent;
+  white-space: nowrap;
+  // -webkit-text-stroke: 1px #d33b3b;
+}
+/* this is the text, when you hover on button */
+.hover-text {
+  position: absolute;
+  box-sizing: border-box;
+  // content: attr(data-text);
+  color: var(--animation-color);
+  // width: 0%;
+  inset: 0;
+  // border-right: var(--border-right) solid red;
+  overflow: hidden;
+  transition: 1.5s;
+  -webkit-text-stroke: 1px var(--animation-color);
+  animation: r2 2s ease-in-out infinite;
+  width: 100%;
+  // filter: drop-shadow(0 0 70px #d33b3b);
+}
+/* hover */
+
+@keyframes r1 {
+  50% {
+    transform: rotate(-1deg) rotateZ(-5deg);
+  }
+}
+
+@keyframes r2 {
+  50% {
+    transform: rotateX(-65deg);
   }
 }
