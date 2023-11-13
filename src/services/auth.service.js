@@ -2,7 +2,7 @@ import axios from 'axios'
 import authHeader from './auth-header'
 
 // const API_URL = 'http://192.168.1.16:8080/api/'
-const API_URL = 'http://64.176.45.22:8080/api/'
+const API_URL = 'http://45.32.102.78:8080/api/'
 
 class AuthService {
   login(username, password) {
