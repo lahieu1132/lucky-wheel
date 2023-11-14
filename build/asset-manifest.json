@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.1d0ddc57.css",
-    "main.js": "/static/js/main.59309a49.js",
+    "main.css": "/static/css/main.201c9544.css",
+    "main.js": "/static/js/main.3bbb73df.js",
     "static/media/zyro-image.png": "/static/media/zyro-image.2051ed5c0090d3785990.png",
     "static/media/logo.png": "/static/media/logo.f94b3181c2b338691ec4.png",
     "index.html": "/index.html",
-    "main.1d0ddc57.css.map": "/static/css/main.1d0ddc57.css.map",
-    "main.59309a49.js.map": "/static/js/main.59309a49.js.map"
+    "main.201c9544.css.map": "/static/css/main.201c9544.css.map",
+    "main.3bbb73df.js.map": "/static/js/main.3bbb73df.js.map"
   },
   "entrypoints": [
-    "static/css/main.1d0ddc57.css",
-    "static/js/main.59309a49.js"
+    "static/css/main.201c9544.css",
+    "static/js/main.3bbb73df.js"
   ]
 }
